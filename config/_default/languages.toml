@@ -1,0 +1,9 @@
+[zh-tw]
+title = "竹白記事本"
+languageName = "繁中"
+weight = 1
+
+[en]
+title = "Chupai Note"
+languageName = "English"
+weight = 2
