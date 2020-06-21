@@ -3,13 +3,12 @@ title: "Vue筆記 - Transition"
 date: 2020-03-07
 description: "這週是 六角鼠年鐵人賽 第五週，紀錄一下 Vue Transition 用法。"
 keywords: ["Vue Transition", "Vue", "w3HexSchool","竹白"]
-tags: ["Vue Transition", "Vue"]
-series: ["w3HexSchool六角鼠年鐵人賽"]
-categories: ["Vue筆記"]
+tags: ["Vue Transition", "Vue", "w3HexSchool"]
+categories: ["w3HexSchool六角鼠年鐵人賽", "Vue筆記"]
 draft: false
 ---
 
-這週是 **六角鼠年鐵人賽** 第五週，紀錄一下 Vue Transition 用法。。
+這週是 **六角鼠年鐵人賽** 第五週，紀錄一下 Vue Transition 用法。
 
 <!--more-->
 

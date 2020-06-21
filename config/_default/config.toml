@@ -47,9 +47,6 @@ threshold = 80.0
 includeNewer = false
 toLower = false
   [[related.indices]]
-  name = "categories"
+  name = "series"
   weight = 100.0
-  [[related.indices]]
-  name = "keywords"
-  weight = 10.0
 
