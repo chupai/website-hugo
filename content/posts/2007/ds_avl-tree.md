@@ -7,42 +7,131 @@ tags: ["資料結構", "二元搜尋樹", "二元樹", "AVL-Tree", "平衡樹", 
 series: ["JavaScript 學演算法"]
 categories: ["w3HexSchool六角鼠年鐵人賽"]
 image: images/covers/200706_ds_avl-tree.png
-draft: true
+draft: false
 libraries:
 - katex
 - mermaid
 ---
 
-這週是六角鼠年鐵人賽第二十三週。上週我們提到一般的二元搜尋樹如果過度傾斜，會導致查詢的時間複雜度上升，為了實現更高效的查詢，因此就有了「平衡樹」。
+這週是六角鼠年鐵人賽第二十三週。
 
-<!--more-->
-
-{{< featuredImage >}}
+二元搜尋樹最大的問題就是，它會出現極端情況，傾斜某一邊，因此它的新增、搜尋、刪除操作最差時間複雜度為 $O(n)$。為了實現更高效的查詢，因此就有人發明了「平衡樹」。
 
 ## 平衡樹概述
 
-一般的二元搜尋樹如果過度傾斜，會導致查詢的時間複雜度上升，為了實現更高效的查詢，因此就有了「平衡樹」。
+**平衡樹（Balanced Tree）** 是二元搜尋樹的改良版本，其目標在保持每一節點兩邊所含的項目數量相等，故可將根節點至任一葉節點之最長路徑最小化。
 
-**平衡樹（Balanced Tree）** 是一種結構平衡的二元搜尋樹，其目標在保持每一節點兩邊所含的項目數量相等，故可將根節點至任一葉節點之最長路徑最小化。
-
-「平衡」的意思，其實就是讓整棵樹看起來比較對稱、比較平衡，不會出現左右子樹其中一邊很高或很矮的情況。它能在 $O(\log n)$ 內完成插入、尋找和刪除操作。
+「平衡」的意思，其實就是讓整棵樹看起來比較對稱、比較平衡，不會出現左右子樹其中一邊很高或很矮的情況。它能在 $O(\log n)$ 內完成新增、搜尋和刪除操作。
 
 常見的平衡樹有：
-- AVL-Tree
-- 紅黑樹（Red–black tree）
-- 樹堆（Treap）
+- **AVL-Tree**：最早被發明的平衡樹，任意子節點的左右子樹高度相差不超過 1，屬於嚴格平衡樹。
+- **紅黑樹（Red–black tree）**：相較於 AVL-Tree，犧牲部分平衡（高 1 層），利用節點顏色，減少平衡操作的旋轉次數。
+- **樹堆（Treap）**：是有一個隨機附加域滿足堆積的性質的二元搜尋樹，其結構相當於以隨機資料新增的二元搜尋樹。
+
+
+### 1. 旋轉（Rotation）操作
+
+幾乎所有的平衡樹都是透過 **旋轉（Rotate）** 操作，使得樹趨於平衡。
+
+首先我們來看二元樹基本的旋轉操作，左旋轉和右旋轉：
+
+#### 3.1 左旋轉
+
+對 A 做左旋轉：
+```mermaid
+graph TB;
+  A((A)) --- n1[null] & B((B));
+  B((B)) --- n2[null] & C((C));
+  C((C)) --- nnn1[null] & nnn2[null];
+  classDef n1 fill:#c2ff8b;
+  classDef n2 fill:#ff8b8b;
+  classDef n3 fill:#fff68b;
+  n1:::n1;
+  n2:::n2;
+```
+
+步驟如下：
+1. 將 B 的左子節點移動到 A 的右子節點位置；
+2. 再將 A 移動到 B 的左子節點位置；
+
+```mermaid
+graph TB;
+  A((A)) --- n1[null] & n2[null];
+  classDef n1 fill:#c2ff8b;
+  classDef n2 fill:#ff8b8b;
+  classDef n3 fill:#fff68b;
+
+  BB((B)) --- AA((A)) & C((C));
+  AA((A)) --- nn1[null] & nn2[null];
+  C((C)) --- nnn1[null] & nnn2[null];
+  classDef n1 fill:#c2ff8b;
+  classDef n2 fill:#ff8b8b;
+
+  n1:::n1;
+  n2:::n2;
+  nn1:::n1;
+  nn2:::n2;
+```
+看上去，就像 A 逆時針旋轉。
+
+#### 1.2 右旋轉
+
+對 A 做右旋轉：
+```mermaid
+graph TB;
+  A((A)) ---  B((B)) & n1[null];
+  B((B)) --- C((C)) & n3[null];
+  C((C)) --- nnn1[null] & nnn2[null];
+  classDef n1 fill:#c2ff8b;
+  classDef n2 fill:#ff8b8b;
+  classDef n3 fill:#fff68b;
+  n1:::n1;
+  n3:::n3;
+```
+
+步驟如下：
+1. 將 B 的右子節點移動到 A 的左子節點位置；
+2. 再將 A 移動到 B 的右子節點位置；
+
+```mermaid
+graph TB;
+  A((A)) ---  n3[null] & n1[null] ;
+  classDef n1 fill:#c2ff8b;
+  classDef n2 fill:#ff8b8b;
+  classDef n3 fill:#fff68b;
+
+  BB((B)) --- C((C)) & AA((A));
+  AA((A)) --- nn3[null] & nn1[null];
+  C((C)) --- nnn1[null] & nnn2[null];
+  classDef n1 fill:#c2ff8b;
+  classDef n2 fill:#ff8b8b;
+
+  n1:::n1;
+  n3:::n3;
+  nn1:::n1;
+  nn3:::n3;
+```
+看上去，就像 A 順時針旋轉。
+
 
 ## AVL-Tree
 
-**AVL-Tree** 全名為 **Adelson-Velsky-Landis Tree**，得名於它的發明者 G. M. Adelson-Velsky 和 Evgenii Landis，是最早被發明的平衡樹。
+**AVL-Tree** 全名為 **Adelson-Velsky-Landis Tree**，得名於它的發明者 G. M. Adelson-Velsky 和 Evgenii Landis，是最早被發明的平衡樹，因為是二元搜尋樹的優化版，因此又稱作「平衡二元搜尋樹」。
 
-它的任意子節點的左右子樹高度相差不超過 1，所以它也被稱為「高度平衡樹」。大部分的操作與二元搜尋樹相同，差異在於 AVL-Tree 新增或刪除資料時，會進行重新結構化的動作，以保持特性及均勻的搜尋路徑，而不會導致樹過度傾斜。
+它的任意子節點的左右子樹高度相差不超過 1，所以它也被稱為「高度平衡樹」。
+
+大部分的操作與二元搜尋樹相同，差異在於 AVL-Tree 新增或刪除資料時，會進行平衡操作（重新結構化），以保持性質及均勻的搜尋路徑，而不會導致樹過度傾斜。
 
 ### 1. 平衡因子 BF
 
-平衡因子（Balanced Factor，BF），節點的平衡因子是它的左子樹的高度減去它的右子樹的高度。
+平衡因子（Balanced Factor，BF）是用來判斷節點的左右子樹高度相差多少。
 
-在 AVL-Tree 中，每一節點的平衡因子為 1、0 或 -1。帶有平衡因子 -2 或 2 的節點被認為是不平衡的，需要重新平衡這個樹。負數表示左子樹比右子樹高、正數表示右子樹比左子樹高、零表示左子樹和右子樹等高。
+計算方式為，左子樹的高度減去它的右子樹的高度：
+- 負數表示左子樹比右子樹高；
+- 正數表示右子樹比左子樹高；
+- 零表示左子樹和右子樹等高。
+
+在 AVL-Tree 中，每一節點的平衡因子為 1、0 或 -1。帶有平衡因子 -2 或 2 的節點被認為是不平衡的，需要重新平衡。
 
 #### 1.1 節點高度公式
 
@@ -61,12 +150,12 @@ graph TB;
   D((D)) --- F((F)) & F2((F2));
   F2:::transparent;
 ```
-- F = max(-1, -1) + 1 = 0
-- D = max(0, -1) + 1 = 1
-- E = max(-1, -1) + 1 = 0
-- B = max(1, 0) + 1 = 2
-- C = max(-1, -1) + 1 = 0
-- A = max(2, 0) + 1 = 3
+- F Height = max(-1, -1) + 1 = 0
+- D Height = max(0, -1) + 1 = 1
+- E Height = max(-1, -1) + 1 = 0
+- B Height = max(1, 0) + 1 = 2
+- C Height = max(-1, -1) + 1 = 0
+- A Height = max(2, 0) + 1 = 3
 
 #### 1.2 平衡因子計算
 
@@ -90,186 +179,171 @@ graph TB;
 - A 左樹高度為 2、右樹高度為 0
   - BF = 2 - 0 = 2
 
-### 3. 旋轉（Rotation）
 
-幾乎所有平衡樹的操作都基於樹旋轉操作，通過旋轉操作可以使得樹趨於平衡。
+### 2. 平衡操作
 
-首先我們來看基本的旋轉操作，左旋轉和右旋轉，如果：
-- BF < -1，表示右子樹比左子樹高超過 1 層，需要做左旋轉。
-- BF > 1，表示左子樹比右子樹高超過 1 層，需要做右旋轉。
+新增／刪除操作的平衡操作共有兩種策略：
+1. 預判是否影響樹的平衡，先調整樹再執行新增／刪除操作；
+2. 或是，執行新增／刪除操作後，再判斷樹是否需要執行平衡操作。
 
-### 3.1 左旋轉
+以下使用後者來說明，並使用新增節點為例。
 
-對 A 做左旋轉：
-```mermaid
-graph TB;
-  A((A)) --- n1[null] & B((B));
-  B((B)) --- n2[null] & C((C));
-  classDef n1 fill:#c2ff8b;
-  classDef n2 fill:#ff8b8b;
-  classDef n3 fill:#fff68b;
-  n1:::n1;
-  n2:::n2;
-```
-
-步驟如下：
-1. 將 B 的左節點設為 A 的右節點後；
-2. 再將 A 設為 B 的右節點。
-
-```mermaid
-graph TB;
-  A((A)) --- n1[null] & n2[null];
-  classDef n1 fill:#c2ff8b;
-  classDef n2 fill:#ff8b8b;
-  classDef n3 fill:#fff68b;
-
-  BB((B)) --- AA((A)) & C((C));
-  AA((A)) --- nn1[null] & nn2[null];
-  classDef n1 fill:#c2ff8b;
-  classDef n2 fill:#ff8b8b;
-
-  n1:::n1;
-  n2:::n2;
-  nn1:::n1;
-  nn2:::n2;
-```
-
-#### 3.2 右旋轉
-
-對 A 做右旋轉：
-```mermaid
-graph TB;
-  A((A)) ---  B((B)) & n1[null];
-  B((B)) --- C((C)) & n3[null];
-  classDef n1 fill:#c2ff8b;
-  classDef n2 fill:#ff8b8b;
-  classDef n3 fill:#fff68b;
-  n1:::n1;
-  n3:::n3;
-```
-
-步驟如下：
-1. 將 B 的右節點設為 A 的左節點後；
-2. 再將 A 設為 B 的右節點。
-
-```mermaid
-graph TB;
-  A((A)) ---  n3[null] & n1[null] ;
-  classDef n1 fill:#c2ff8b;
-  classDef n2 fill:#ff8b8b;
-  classDef n3 fill:#fff68b;
-
-  BB((B)) --- C((C)) & AA((A));
-  AA((A)) --- nn3[null] & nn1[null];
-  classDef n1 fill:#c2ff8b;
-  classDef n2 fill:#ff8b8b;
-
-  n1:::n1;
-  n3:::n3;
-  nn1:::n1;
-  nn3:::n3;
-```
-
-### 4. 平衡操作
-
-在加入或刪除後，可能會導致二元樹不平衡，我們可以執行旋轉操作，將樹調整成平衡。
-
-請考慮以下四種情況：
-- LL 型
-- RR 型
-- LR 型
-- RL 型
-
-四種情況，會不同的調整方式。
+新增／刪除操作後，請考慮以下四種情況，會有不同的調整方式：
+1. LL 型
+2. RR 型
+3. LR 型
+4. RL 型
 
 #### 4.1 LL 型 & RR 型
 
-這兩種情況是對稱的，所以處理的思路完全是一致的：
-- LL 型：當新增的節點在不平衡的節點的左側的左側的時候，需要對不平衡節點執行 **右旋轉**。
-- RR 型：當新增的節點在不平衡的節點的右側的右側的時候，需要對不平衡節點執行 **左旋轉**。
+這兩種情況是鏡像的，所以處理的思路完全是一致的：
+- LL 型：當新增的節點在不平衡的節點的左側的左側
+	- 對不平衡節點執行 **右旋轉**。
+- RR 型：當新增的節點在不平衡的節點的右側的右側
+	- 對不平衡節點執行 **左旋轉**。
 
+直接看範例。
 
-LL 型：30 被新增到 50 左節點的左節點，導致二元樹不平衡。對 50 做右旋轉：
+LL 型：50 因為新增 30 而導致 BF 變成 2，因此需要調整，而 30 位於 50 的 左側的左側。
+
 ```mermaid
 graph TB;
-  A((50)) --- |L| B((40));
+  A((50)) --- B((40));
   A((50)) --- n1[null];
-  B((40)) --- |L| C((30));
+  B((40)) --- C((30));
   B((40)) --- n2[null];
 
-  B2((40))  --- C2((30)) & A2((50));
+  class A red;
+  class C green;
+  class n1,n2 transparent;
+  classDef red stroke:red,stroke-width:2px;
+  classDef green stroke:#61bfa6,stroke-width:2px;
+  classDef transparent fill:transparent,color:transparent,stroke:transparent;
 ```
 
-RR 型：70 被新增到 50 右節點的右節點，導致二元樹不平衡。對 50 做左旋轉：
+處理方式，對 50 做右旋轉：
 ```mermaid
 graph TB;
-  A((50)) --- n1[null];
-  A((50)) --- |R| B((60));
-  B((60)) --- n2[null];
-  B((60)) --- |R| C((70));
-
-  B2((60))  --- A2((50)) & C2((70));
+  B((40))  --- C((30)) & A((50));
 ```
+
+另一種情況，50 因為新增 20 而導致 BF 變成 2，而 20 位於 50 的左側的左側：
+```mermaid
+graph TB;
+  A((50)) --- B((40)) & C((60));
+  B((40)) --- D((30)) & E((45));
+  D((30)) --- F((20)) & n1((null));
+
+  class A red;
+  class F green;
+  class n1,n2 transparent;
+  classDef red stroke:red,stroke-width:2px;
+  classDef green stroke:#61bfa6,stroke-width:2px;
+  classDef transparent fill:transparent,color:transparent,stroke:transparent;
+```
+
+一樣對 50 做右旋轉：
+```mermaid
+graph TB;
+  A((40)) --- B((30)) & C((50));
+  B((30)) --- D((20)) & n1((null));
+  C((50)) --- E((45)) & F((60));
+  
+  class n1 transparent;
+  classDef transparent fill:transparent,color:transparent,stroke:transparent;
+```
+
+RR 型就是 LL 型的鏡像情況。
 
 #### 4.2 LR 型 & RL 型
 
+這兩種情況是鏡像的，所以處理的思路完全是一致的：
 - LR 型：當新增的節點在不平衡的節點的左側的右側
-    1. 先對不平衡節點的左節點執行 **左旋轉**；
-    2. 並將處理好的節點設為不平衡節點的左節點；
-    3. 再對不平衡節點執行 **右旋轉**。
+    1. 先對不平衡節點的左子節點執行 **左旋轉**；
+    2. 再對不平衡節點執行 **右旋轉**。
 - RL 型：當新增的節點在不平衡的節點的右側的左側
-    1. 先對不平衡節點的右節點執行 **右旋轉**；
-    2. 並將處理好的節點設為不平衡節點的右節點；
-    3. 再對不平衡節點執行 **左旋轉**。
+    1. 先對不平衡節點的右子節點執行 **右旋轉**；
+    2. 再對不平衡節點執行 **左旋轉**。
 
+直接看範例。
 
-LR 型：45 被新增到 50 左節點的右節點，導致二元樹不平衡。先對 40 做左旋轉，會變成 LL 型，再對 50 做右旋轉。
+LR 型：50 因為新增 45 而導致 BF 變成 2，因此需要調整，而 30 位於 50 的左側的右側。
 ```mermaid
 graph TB;
-  A((50)) --- |L| B((40));
+  A((50)) --- B((40));
   A((50)) --- n1[null];
   B((40)) --- n2[null];
-  B((40)) --- |R| C((45));
+  B((40)) --- C((45));
 
-  A2((50)) --- |L| B2((40));
-  A2((50)) --- n12[null];
-  B2((45)) --- |L| C2((40));
-  B2((45)) --- n22[null];
-  
-  A3((45)) --- B3((40)) & C3((50));
+  class A red;
+  class C green;
+  class n1,n2 transparent;
+  classDef red stroke:red,stroke-width:2px;
+  classDef green stroke:#61bfa6,stroke-width:2px;
+  classDef transparent fill:transparent,color:transparent,stroke:transparent;
 ```
 
-RL 型：55 被新增到 50 節點的左節點，導致二元樹不平衡。先對 60 做右旋轉，會變成 RR 型，再對 50 做左旋轉。
+處理方式，先對 40 做左旋轉，會變成 LL 型，再對 50 做右旋轉：
 ```mermaid
 graph TB;
-  A((50)) --- n1[null];
-  A((50)) --- |R| B((60));
-  B((60)) --- |L| C((55));
-  B((60)) --- n2[null];
+  A((50)) --- B((40)) & n1[null];
+  B((45)) --- C((40)) & n2[null];
+ 
+  BB((45))  --- CC((40)) & AA((50));
   
-  A2((50)) --- n12[null];
-  A2((50)) --- |R| B2((60));
-  B2((55)) --- n22[null];
-  B2((55)) --- |R| C2((60));
-  
-  A3((55)) --- B3((50)) & C3((60));
+  class n1,n2 transparent;
+  classDef red stroke:red,stroke-width:2px;
+  classDef green stroke:#61bfa6,stroke-width:2px;
+  classDef transparent fill:transparent,color:transparent,stroke:transparent;
 ```
+
+另一種情況，50 因為新增 41 而導致 BF 變成 2，而 41 位於 50 的左側的右側：
+```mermaid
+graph TB;
+  A((50)) --- B((40)) & C((60));
+  B((40)) --- D((30)) & E((45));
+  E((45)) --- F((41)) & n1((null));
+
+  class A red;
+  class F green;
+  class n1,n2 transparent;
+  classDef red stroke:red,stroke-width:2px;
+  classDef green stroke:#61bfa6,stroke-width:2px;
+  classDef transparent fill:transparent,color:transparent,stroke:transparent;
+```
+
+一樣先對 40 做左旋轉，會變成 LL 型，再對 50 做右旋轉：
+```mermaid
+graph TB;
+  AA((50)) --- BB((45)) & CC((60));
+  BB((45)) --- DD((40)) & n11((null))
+  DD((40)) --- FF((30)) & EE((41));
+
+  A((45)) --- B((40)) & C((50));
+  B((30)) --- D((30)) & E((41));
+  C((50)) --- n1((null)) & F((60));
+  
+  class n1,n11 transparent;
+  classDef transparent fill:transparent,color:transparent,stroke:transparent;
+```
+
+RL 型就是 LR 型的鏡像情況。
 
 
 ## JavaScript 實作 AVL-Tree 
 
-節點：
+二元樹的節點：
 ```javascript
-class Node {
-  constructor(data, left = null, right = null) {
+class BTNode {
+  constructor(data) {
     this.data = data;
-    this.left = left;
-    this.right = right;
+    this.left = null;
+    this.right = null;
   }
 }
 ```
 
-根：
+本體：
 ```javascript
 class AVLTree {
   constructor() {
@@ -279,10 +353,8 @@ class AVLTree {
 }
 ```
 
-AVL-Tree 的結構與大部分的方法都與普通二元搜尋樹相同，只有插入、刪除節點完成後，會需要檢查樹是否平衡，因此我們會需要幾個方法來檢查樹是否平衡與平衡操作。
 
-
-### 1. 計算節點高度 & 計算平衡因子
+### 1. 計算平衡因子
 
 計算平衡因子需要節點高度，因此我們需要計算節點高度的方法：
 
@@ -298,7 +370,7 @@ getNodeHeight(node) {
 ```
 1. 子節點為 `null` 時，高度視為 -1。
 2. 使用歸迴取得左子節點高、右子節點高。
-3. 節點高度 = max(左子節點高, 右子節點高) + 1
+3. 節點高度 = max(左子節點高, 右子節點高) + 1。
 
 計算平衡因子：
 ```javascript
@@ -311,9 +383,9 @@ getBF(node) {
 
 ### 2. 旋轉操作
 
-LL 型，右旋轉：
+右旋轉：
 ```javascript
-rotationLL(node) {
+rightRotation(node) {
   const temp = node.left;
   node.left = temp.right;
   temp.right = node;
@@ -321,9 +393,9 @@ rotationLL(node) {
 }
 ```
 
-RR 型，左旋轉：
+左旋轉：
 ```javascript
-rotationRR(node) {
+leftRotation(node) {
   const temp = node.right;
   node.right = temp.left;
   temp.left = node;
@@ -331,134 +403,130 @@ rotationRR(node) {
 }
 ```
 
-LR 型，先對節點左子樹左旋轉，再對節點右旋轉：
-```javascript
-rotationLR(node) {
-  node.left = this.rotationRR(node.left);
-  return this.rotationLL(node);
-}
-```
-
-RL 型，先對節點右子樹右旋轉，再對節點左旋轉：
-```javascript
-rotationRL(node) {
-  node.right = this.rotationLL(node.right);
-  return this.rotationRR(node);
-}
-```
-
 ### 3. 平衡操作
+
+平衡操作，檢查節點是否平衡：
+- 若 BF > 1，表示不平衡，且左子樹高於右子樹，判斷是 LL、還是 LR：
+  1. 若是 LR 型：
+     - 先對不平衡節點的左子節執行左旋轉，變成 LL 型；
+  2. LL 型，對不平衡節點執行右旋轉。 
+- 若 BF < -1，表示不平衡，且右子樹高於左子樹，判斷是 RR、還是 RL：
+  1. 若是 RL 型：
+     - 先對不平衡節點的左子節執行右旋轉，變成 LL 型；
+  2. RR 型，對不平衡節點執行左旋轉。
+
+判斷新增的節點是被加在左側還是右側，可以計算左、右子樹哪邊高，就能知道加在哪邊，因此我們可以計算 BF，若是負的右子樹高，反之，正的左子樹高。
 
 ```javascript
 balance(node) {
-  if (!node) { return node; }
+  if (!node) {
+    return node;
+  }
   const nodeBF = this.getBF(node);
-  
   if (nodeBF > 1) {
-    if (this.getNodeHeight(node.left.left) >= this.getNodeHeight(node.left.right)) {
-      node = this.rotationLL(node);
-    } else {
-      node = this.rotationLR(node);
+    if (this.getBF(node.left) < 0) {
+      node.left = this.leftRotation(node.left);
     }
+    node = this.rightRotation(node);
   } else if (nodeBF < -1) {
-    if (this.getNodeHeight(node.right.right) >= this.getNodeHeight(node.right.left)) {
-      node = this.rotationRR(node);
-    } else {
-      node = this.rotationRL(node);
+    if (this.getBF(node.right) > 0) {
+      node.right = this.rightRotation(node.right);
     }
+    node = this.leftRotation(node);
   }
   return node;
 }
 ```
-首先，判斷平衡因子大於 1 還是小於 - 1：
-- 大於 1 左子樹高於右子樹；
-- 小於 -1 右子樹高於左子樹。
 
-接下來判斷下一個節點哪邊的子樹比較高，並執行對應情況的旋轉操作。
+### 4. 新增操作
 
-
-### 4. 新增節點
-
-AVL-Tree 新增節點方式與一般的二元搜尋樹相同，但它最後會檢查樹是否平衡，如果不平衡會執行平衡操作。
+新增節點後，需要檢查節點至根節點這條路徑，是否符合平衡條件，因此我們可以使用遞迴的方式回頭檢查節點是否符合平衡：
 
 ```javascript
 insert(data) {
   const insertHelper = (node) => {
-    if (!node) {
-      node = new Node(data);
-    } else if (data < node.data) {
-      node.left = insertHelper(node.left);
-      node = this.balance(node);
-    } else {
-      node.right = insertHelper(node.right);
-      node = this.balance(node);
+    let curNode = node;
+    if (!curNode) {
+      return new BTNode(data);
     }
-    return node;
+    if (data < curNode.data) {
+      curNode.left = insertHelper(curNode.left);
+    } else if (data > curNode.data) {
+      curNode.right = insertHelper(curNode.right);
+    }
+    curNode = this.balance(curNode);
+    return curNode;
   };
-
   this.root = insertHelper(this.root);
-  return this.root;
 }
 ```
 
+
 ### 5. 刪除節點
 
-刪除節點也與與一般的二元搜尋樹相同，一樣再刪除後檢查樹是否平衡，如果不平衡會執行平衡操作。
-
+刪除操作與普通的二元素搜尋樹相同，刪除節點後，檢查節點至根節點這條路徑，是否符合平衡條件：
 ```javascript
-  remove(data) {
-    const removeNode = (data, node) => {
-      if (!node) {
+remove(data) {
+  const removeNode = (data, node) => {
+    let curNode = node;    // let
+
+    if (!curNode) {
+      return false;
+    }
+
+    if (data < curNode.data) {
+      curNode.left = removeNode(data, curNode.left);
+
+    } else if (data > curNode.data) {
+      curNode.right = removeNode(data, curNode.right);
+
+    } else {
+
+      if (!curNode.left && !curNode.right) {
         return null;
       }
-      if (data === node.data) {
-        if (!node.left && !node.right) {
-          node = null;
-          return node;
-        }
-        if (!node.left) {
-          node = node.right;
-          return node;
-        } else if (!node.right) {
-          node = node.left;
-          return node;
-        }
-        const aux = this.findMin(node.right);
-        node.data = aux.data;
-        node.right = removeNode(aux.data, node.right);
-        return node;
-      }
-      if (node.data > data) {
-        node.left = removeNode(data, node.left);
-        node = this.balance(node);
-        return node;
-      } else {
-        node.right = removeNode(data, node.right);
-        node = this.balance(node);
-        return node;
-      }
-    };
-    this.root = removeNode(data, this.root);
-    return this.root;
-  }
 
-findMin(node = this.root) {
-  let currentNode = node;
-  while (currentNode && currentNode.left) {
-    currentNode = currentNode.left;
-  }
-  return currentNode;
+      if (!curNode.left) {
+        return curNode.right;
+      }
+      if (!curNode.right) {
+        return curNode.left;
+      }
+
+      const aux = this.findMin(curNode.right);
+      curNode.data = aux.data;
+      curNode.right = removeNode(aux.data, curNode.right);
+    }
+    curNode = this.balance(curNode);  // new
+    return curNode;
+  };
+  this.root = removeNode(data, this.root);
 }
 ```
 
 ## 總結
 
+### 1. 分析
+
+二元搜尋樹最大的問題就是，它會出現極端情況，傾斜某一邊，因此它的新增、搜尋、刪除操作最差時間複雜度為 $O(n)$。
+
+而 AVL-Tree 再新增和刪除時，就會自動平衡二元樹，因此不會有極端情況發生。因此它的新增、搜尋、刪除操作平均、最差時間複雜度都為 $O(\log n)$。
+
+### 2. 平衡操作時間複雜度
+
+平衡操作是透過旋轉 1 次或 2 次來降低樹高。
+
+新增操作因為是增加樹高，而造成樹不平衡，因此最多只需要執行 1 次平衡操作即可平衡整棵樹（最多旋轉 2 次），所以新增的平衡操作時間複雜度為 $O(1)$。
+
+但刪除操作是因為降低樹高，而造成樹不平衡，因此執行平衡操作後，父節點可能又會不平衡，要再次執行平衡操作，所以最糟的情況下需要執行多次平衡操作，時間複雜度為 $O(\log n)$。
+
+我們下週要講的**紅黑樹**的刪除平衡操作可以在 3 次旋轉內完成平衡操作。
+
+### 3. 視覺化
+
+這是我用 Vue.js 製作的，可以很方便的觀察 AVL-Tree 結構變化：
+
 <iframe height="800" style="width: 100%;" scrolling="no" title="AVL-Tree Tree with Vue.js" src="https://codepen.io/chupai/embed/BajoEoe?height=265&theme-id=dark&default-tab=result" frameborder="no" allowtransparency="true" allowfullscreen="true">
   See the Pen <a href='https://codepen.io/chupai/pen/BajoEoe'>AVL-Tree Tree with Vue.js</a> by Chupai@Design
   (<a href='https://codepen.io/chupai'>@chupai</a>) on <a href='https://codepen.io'>CodePen</a>.
 </iframe>
-
-
-二元搜尋樹最大的問題就是，它會出現極端情況，造成它可能會有一邊非常的深，因此它的插入、搜尋、刪除操作最差時間複雜度為 $O(n)$。
-
-而 AVL-Tree 再新增和刪除時，就會自動平衡二元樹，因此不會有極端情況發生。因此它的插入、搜尋、刪除操作平均、最差時間複雜度都為 $O(\log n)$。

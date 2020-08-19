@@ -9,26 +9,32 @@ image: images/covers/190620_javascript.png
 draft: false
 ---
 
-JavaScript筆記 目錄
 <!--more-->
 {{< featuredImage >}}
 
-認識 JavaScript：
+---
+
 基本語法與文法：
-風格：
-物件：
+- [變數](/posts/2008/js_variable/)
+
 資料操作：
 - [陣列](/posts/200424_js_array)
 - [迭代陣列](/posts/200425_js_array_iterate)
-- [展開／其餘運算子](/posts/200513_js_spread_and_rest_operator)
-- [解構指定](/posts/200514_js_destructuring_assignment)
-- [物件字面值擴充功能](/posts/200515_js_object_literal_extension)
+- [Slice、Splice、Split 的區別](/posts/2007/js_slice_splice_split/)
+- [連續的數字陣列](/posts/2008/js_array_numbers/)
 - [日期時間](/posts/200516_js_date)
+- [物件字面值擴充功能](/posts/200515_js_object_literal_extension)
+- [展開／其餘運算子](/posts/200513_js_spread_and_rest_operator/)
+- [解構指定](/posts/200514_js_destructuring_assignment)
 
 函式：
-物件導向：
-模組 Modules：
-DOM：
-例外與錯誤處理：
-非同步程式設計：
-正規表達式：
+- [函式呼叫與 this](/posts/2008/js_this)
+
+非同步：
+- [非同步](/posts/2008/js_asynchronous)
+- [回呼函式](/posts/2008/js_callback)
+- [Promise](/posts/2008/js_promise)
+- [Async/Await](/posts/2008/js_async_await)
+
+BOM：
+- [window.location](/posts/2008/js_window_location)
