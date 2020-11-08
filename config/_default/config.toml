@@ -19,20 +19,20 @@ enableGitInfo = false # When true, the modified date will appear on a summary an
 googleAnalytics = "UA-160835374-1"
 
 [markup]
-[markup.goldmark]
-[markup.goldmark.renderer]
-  hardWraps = true
-  unsafe = true
-  xHTML = true
-[markup.highlight]
-codeFences = true
-lineNos = true
-lineNumbersInTable = true
-noClasses = false
-[markup.tableOfContents]
-endLevel = 3
-ordered = false
-startLevel = 2
+  [markup.goldmark]
+  [markup.goldmark.renderer]
+    hardWraps = true
+    unsafe = true
+    xHTML = true
+  [markup.highlight]
+    codeFences = true
+    lineNos = true
+    lineNumbersInTable = true
+    noClasses = false
+  [markup.tableOfContents]
+    endLevel = 3
+    ordered = false
+    startLevel = 2
 
 [outputs]
 home = ["HTML", "RSS", "JSON"]

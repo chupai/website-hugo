@@ -73,8 +73,27 @@ draft: false
 - [鏈結串列 Linked list](/posts/200427_ds_linkedlist)
 - [堆疊 ＆ 佇列](/posts/200504_ds_stack_queue)
 - [集合 & 映射](/posts/200517_ds_set_map)
+- [樹 & 二元樹](/posts/2006/ds_tree_and_binary_tree/)
+- [二元搜尋樹](/posts/2006/ds_binary_search_tree/)
+- [AVL-Tree](/posts/2007/ds_avl-tree/)
+- [紅黑樹（上）：B 樹、2-3-4 樹](/posts/2007/ds_redblack-tree-1)
+- [紅黑樹（中）：新增操作](/posts/2007/ds_redblack-tree-2)
+- [紅黑樹（下）：刪除操作](/posts/2007/ds_redblack-tree-3)
+- [樹堆](/posts/2008/ds_treap/)
 
 排序演算法：
 - [排序演算法](/posts/200518_sort_algorithm)
 - [合併排序](/posts/200525_sort_algorithm_merge_sort)
 - [快速排序](/posts/2000601_sort_algorithm_quick_sort)
+- [希爾排序](/posts/2006/sort_algorithm_shell_sort/)
+- [堆積排序](/posts/2006/sort_algorithm_heap_sort/)
+
+搜尋演算法：
+- [搜尋演算法](/posts/2008/search_algorithm/)
+
+洗牌演算法：
+- [洗牌演算法](/posts/2008/shuffle_algorithm/)
+
+演算法設計：
+- [遞迴](/posts/2008/alg_recursion/)
+- [分治法、動態規劃](/posts/2009/divide_and_conquer_dpn/)
