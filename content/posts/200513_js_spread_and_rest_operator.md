@@ -78,7 +78,7 @@ console.log(temp2); // [1, 2, 3, 4, 5, 6]
 也可利用它來淺拷貝陣列：
 ```javascript
 let arr1 = [1, 2, 3];
-let arr2 = [...arr];
+let arr2 = [...arr1];
 
 console.log(arr2); // [1, 2, 3]
 console.log(arr1 === arr2); // false

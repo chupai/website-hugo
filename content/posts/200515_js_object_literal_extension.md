@@ -47,9 +47,9 @@ console.log(foo(1, 2)); // {a: 1, b: 2}
 ```javascript
 const foo = 'bar';
 
-const baz = {foo};
+const baz = { foo };
 // 等同於
-const baz = {foo: foo};
+const baz = { foo: foo };
 ```
 
 ### 2. 方法簡寫
@@ -76,7 +76,7 @@ const obj = {
 obj.foo(1); // 1
 ```
 
-但使用簡寫的放式，函式為不具名，而且無法使用箭頭函式。
+但使用簡寫的方式，函式為不具名，而且無法使用箭頭函式。
 
 ## 屬性名稱
 

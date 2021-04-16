@@ -151,9 +151,7 @@ return [...temp, ...leftArr.slice(leftIndex), ...rightArr.slice(rightIndex)];
 ```javascript
 function mergeSort(arr) {
   const n = arr.length;
-  if (n < 2) {
-    return arr;
-  }
+  if (n < 2) { return arr; }
   const midIndex = Math.floor(n / 2);
   const leftArray = arr.slice(0, midIndex);
   const rightArray = arr.slice(midIndex);
@@ -166,7 +164,7 @@ function mergeSort(arr) {
 ```javascript
 function mergeSort(arr) {
   const n = arr.length;
-  if (n < 1) { return arr; }
+  if (n < 2) { return arr; }
   const midIndex = Math.floor(n / 2);
   const leftArray = arr.slice(0, midIndex);
   const rightArray = arr.slice(midIndex);

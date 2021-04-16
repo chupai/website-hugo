@@ -15,6 +15,7 @@ draft: false
 
 ## 基本語法與文法
 - [變數](/posts/2008/js_variable/)
+- [註解 & 型別檢查](/posts/2102/comments)
 
 ## 資料操作
 - [陣列](/posts/200424_js_array)
@@ -43,3 +44,4 @@ draft: false
 
 ## BOM
 - [window.location](/posts/2008/js_window_location)
+- [剪貼簿複製操作](/posts/2101/clipboard/)
